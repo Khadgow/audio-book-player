@@ -1,0 +1,103 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Audiobook {
+  id                                   String       @id @db.Uuid @default(uuid())
+  bookId                               String?      @db.Uuid @map("book_id")
+  voiceActorId                         String?      @db.Uuid @map("voice_actor_id")
+  audioUrl                             String?      @db.VarChar(255) @map("audio_url")
+  length                               Float?
+  book_audiobook_bookTobook            Book?        @relation("audiobook_bookTobook", fields: [bookId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  voice_actor                          VoiceActor?  @relation(fields: [voiceActorId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  history_history_audiobookToaudiobook History[]    @relation("history_audiobookToaudiobook")
+  history_history_user_idToaudiobook   History[]    @relation("history_user_idToaudiobook")
+  @@map("audiobook")
+}
+
+model Author {
+  id                       String  @id @db.Uuid @default(uuid())
+  surname                  String? @db.VarChar(255)
+  name                     String? @db.VarChar(255)
+  patronymic               String? @db.VarChar(255)
+  book_book_authorToauthor Book[]  @relation("book_authorToauthor")
+  @@map("author")
+}
+
+model Book {
+  id                             String       @id @db.Uuid @default(uuid())
+  name                           String?      @db.VarChar(255)
+  authorId                       String?      @db.Uuid @map("author_id")
+  imageUrl                       String?      @db.VarChar(255) @map("image_url")
+  audiobook_audiobook_bookTobook Audiobook[]  @relation("audiobook_bookTobook")
+  author_book_authorToauthor     Author?      @relation("book_authorToauthor", fields: [authorId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  book_genre                     BookGenre[]
+  @@map("book")
+}
+
+model BookGenre {
+  genre_id String @db.Uuid
+  book_id  String @db.Uuid
+  book     Book   @relation(fields: [book_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  genre    Genre  @relation(fields: [genre_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@id([genre_id, book_id])
+  @@map("book_genre")
+}
+
+model Genre {
+  id         String       @id @db.Uuid @default(uuid())
+  name       String?      @db.VarChar(255)
+  book_genre BookGenre[]
+  @@map("genre")
+}
+
+model History {
+  id                                     String     @id @db.Uuid @default(uuid())
+  audiobookId                            String?    @db.Uuid @map("audiobook_id")
+  userId                                 String?    @db.Uuid @map("user_id")
+  time                                   Float?
+  audiobook_history_audiobookToaudiobook Audiobook? @relation("history_audiobookToaudiobook", fields: [audiobookId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  audiobook_history_user_idToaudiobook   Audiobook? @relation("history_user_idToaudiobook", fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  @@map("history")
+}
+
+model Role {
+  id        String      @id @db.Uuid @default(uuid())
+  name      String?     @db.VarChar(255)
+  user_role UserRole[]
+  @@map("role")
+}
+
+model User {
+  id        String      @id @db.Uuid @default(uuid())
+  username  String?     @db.VarChar(255)
+  password  String?     @db.VarChar(255)
+  email     String?     @unique @db.VarChar(255)
+  user_role UserRole[]
+  @@map("user")
+}
+
+model UserRole {
+  role_id String @db.Uuid
+  user_id String @db.Uuid
+  role    Role   @relation(fields: [role_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  user    User   @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@id([role_id, user_id])
+  @@map("user_role")
+}
+
+model VoiceActor {
+  id         String      @id @db.Uuid @default(uuid())
+  surname    String?     @db.VarChar(255)
+  name       String?     @db.VarChar(255)
+  patronymic String?     @db.VarChar(255)
+  audiobook  Audiobook[]
+  @@map("voice_actor")
+}
