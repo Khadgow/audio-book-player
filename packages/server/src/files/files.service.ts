@@ -9,7 +9,12 @@ export class FilesService {
     try {
       const extension = path.extname(file.originalname)
       const fileName = uuid.v4() + extension
-      const filePath = path.resolve(__dirname, '..', 'static', dir)
+      const filePath = path.resolve(
+        process.env.FILE_STORAGE_PATH,
+        // '..',
+        'static',
+        dir,
+      ) // __dirname
       await fs.access(filePath).catch(async () => {
         await fs.mkdir(filePath, { recursive: true })
       })

@@ -30,7 +30,7 @@ export const RegisterForm = () => {
       alignItems="center"
       minHeight="100vh"
     >
-      <h2>Зарегестироваться</h2>
+      <h2>Зарегистироваться</h2>
 
       <form noValidate autoComplete="off" onSubmit={handleSubmit(onSubmit)}>
         <Stack spacing={2} width="300px">
@@ -38,7 +38,7 @@ export const RegisterForm = () => {
           <TextField {...register('username')} label="Имя пользователя" />
           <TextField {...register('password')} label="Пароль" type="password" />
           <Button variant="contained" type="submit">
-            Зарегестрироваться
+            Зарегистрироваться
           </Button>
           <Link to="/login">Уже есть аккаунт? Войти</Link>
         </Stack>

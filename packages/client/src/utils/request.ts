@@ -1,6 +1,6 @@
 import axios, { InternalAxiosRequestConfig, AxiosResponse } from 'axios'
 
-const baseURL = 'test'
+const baseURL = import.meta.env.VITE_BASE_API_URL
 const ApiTokenStorageKey = 'USER_TOKEN'
 
 const request = axios.create({

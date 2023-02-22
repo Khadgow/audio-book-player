@@ -39,7 +39,7 @@ export const LoginForm = () => {
           <Button variant="contained" type="submit">
             Войти
           </Button>
-          <Link to="/register">Нет аккаунта? Зарегестрироваться</Link>
+          <Link to="/register">Нет аккаунта? Зарегистрироваться</Link>
         </Stack>
       </form>
     </Box>

@@ -34,9 +34,9 @@ model Book {
   name                           String?      @db.VarChar(255)
   authorId                       String?      @db.Uuid @map("author_id")
   imageUrl                       String?      @db.VarChar(255) @map("image_url")
-  audiobook_audiobook_bookTobook Audiobook[]  @relation("audiobook_bookTobook")
-  author_book_authorToauthor     Author?      @relation("book_authorToauthor", fields: [authorId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  book_genre                     BookGenre[]
+  audiobooks                     Audiobook[]  @relation("audiobook_bookTobook")
+  author                         Author?      @relation("book_authorToauthor", fields: [authorId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  genres                         BookGenre[]
   @@map("book")
 }
 

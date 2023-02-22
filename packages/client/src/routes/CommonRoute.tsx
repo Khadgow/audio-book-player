@@ -4,6 +4,7 @@ import React, { useEffect } from 'react'
 // import { isAxiosErrorError, useGetMeQuery } from 'api'
 import { useAppDispatch } from 'store'
 import { appActions } from 'store/appSlice'
+import { Navbar } from 'components/Navbar'
 
 export const CommonRoute: React.FC = () => {
   // const { data, error, isSuccess } = useGetMeQuery()
@@ -23,5 +24,9 @@ export const CommonRoute: React.FC = () => {
   //   return <Navigate replace to="/login" />
   // }
 
-  return <Outlet />
+  return (
+    <Navbar>
+      <Outlet />
+    </Navbar>
+  )
 }

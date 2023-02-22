@@ -16,7 +16,12 @@ export class BooksService {
   }
 
   findAll() {
-    return this.prisma.book.findMany()
+    return this.prisma.book.findMany({
+      include: {
+        genres: true,
+        author: true,
+      },
+    })
   }
 
   findOne(id: string) {

@@ -3,7 +3,7 @@ import { User } from 'modules/auth'
 
 const name = '@@app'
 
-interface AppState {
+export interface AppState {
   currentUser?: User
 }
 

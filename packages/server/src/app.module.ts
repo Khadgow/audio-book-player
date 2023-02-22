@@ -10,6 +10,7 @@ import { HistoryModule } from 'history/history.module'
 import { BooksModule } from 'books/books.module'
 import { ServeStaticModule } from '@nestjs/serve-static'
 import * as path from 'path'
+import * as process from 'process'
 
 @Module({
   imports: [
@@ -22,7 +23,7 @@ import * as path from 'path'
     HistoryModule,
     BooksModule,
     ServeStaticModule.forRoot({
-      rootPath: path.resolve(__dirname, 'static'),
+      rootPath: path.resolve(process.env.FILE_STORAGE_PATH, 'static'), // __dirname
     }),
   ],
   providers: [PrismaService],
