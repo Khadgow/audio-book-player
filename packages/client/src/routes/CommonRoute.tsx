@@ -5,6 +5,7 @@ import React, { useEffect } from 'react'
 import { useAppDispatch } from 'store'
 import { appActions } from 'store/appSlice'
 import { Navbar } from 'components/Navbar'
+import { AudiobookPlayer } from 'modules/audiobookPlayer'
 
 export const CommonRoute: React.FC = () => {
   // const { data, error, isSuccess } = useGetMeQuery()
@@ -25,8 +26,11 @@ export const CommonRoute: React.FC = () => {
   // }
 
   return (
-    <Navbar>
-      <Outlet />
-    </Navbar>
+    <>
+      <Navbar>
+        <Outlet />
+      </Navbar>
+      <AudiobookPlayer />
+    </>
   )
 }

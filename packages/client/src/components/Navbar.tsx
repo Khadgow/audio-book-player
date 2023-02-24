@@ -217,9 +217,19 @@ export const Navbar: React.FC<NavbarProps> = ({ children }) => {
           </div>
         </Toolbar>
       </AppBar>
-      <Drawer variant="permanent" open={isOpen}>
+      <Drawer
+        variant="permanent"
+        open={isOpen}
+        sx={{
+          height: '90vh',
+        }}
+      >
         <DrawerHeader />
-        <List>
+        <List
+          sx={{
+            height: '90vh',
+          }}
+        >
           {list.map(({ text, path, icon, roles }) => {
             if (
               roles &&
