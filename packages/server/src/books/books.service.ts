@@ -25,7 +25,23 @@ export class BooksService {
   }
 
   findOne(id: string) {
-    return this.prisma.book.findUnique({ where: { id } })
+    return this.prisma.book.findUnique({
+      where: { id },
+      include: {
+        audiobooks: {
+          include: {
+            voiceActor: true,
+            audio: {
+              orderBy: {
+                position: 'asc',
+              },
+            },
+          },
+        },
+        author: true,
+        genres: true,
+      },
+    })
   }
 
   update(id: string, updateBookDto: UpdateBookDto) {

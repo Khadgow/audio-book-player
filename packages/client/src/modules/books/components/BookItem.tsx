@@ -2,10 +2,13 @@ import { Box } from '@mui/material'
 import { Book } from '../models'
 import { FC } from 'react'
 import { createImageUrl } from 'utils/createImageUrl'
+import { generatePath, Link } from 'react-router-dom'
+import { routes } from 'modules/books'
+import { createShortName } from 'utils/createShortName'
 
 type BookItemProps = Book
 
-export const BookItem: FC<BookItemProps> = ({ name, imageUrl, author }) => {
+export const BookItem: FC<BookItemProps> = ({ name, imageUrl, author, id }) => {
   return (
     <Box
       sx={{
@@ -18,17 +21,19 @@ export const BookItem: FC<BookItemProps> = ({ name, imageUrl, author }) => {
         margin: '10px',
       }}
     >
-      <img
-        width={238}
-        height={238}
-        src={createImageUrl(imageUrl)}
-        alt="Обложка книги"
-      />
-      <span>{name}</span>
-      <span>
-        {author.surname} {author.name[0].toUpperCase()}.{' '}
-        {author.patronymic[0].toUpperCase()}.
-      </span>
+      <Link to={generatePath(routes.audiobooks, { id })}>
+        <img
+          width={238}
+          height={238}
+          src={createImageUrl(imageUrl)}
+          alt="Обложка книги"
+        />
+      </Link>
+
+      <Link to={generatePath(routes.audiobooks, { id })}>
+        <span>{name}</span>
+      </Link>
+      <span>{createShortName(author)}</span>
     </Box>
   )
 }

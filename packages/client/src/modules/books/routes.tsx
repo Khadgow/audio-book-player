@@ -1,9 +1,10 @@
 import React from 'react'
-import { BooksList } from './pages'
+import { BooksList, AudiobooksList } from './pages'
 import { CommonRoute } from 'routes/CommonRoute'
 
 export const routes = {
   booksList: '/books',
+  audiobooks: '/books/:id',
 }
 
 export const booksRoutes = [
@@ -13,6 +14,10 @@ export const booksRoutes = [
       {
         path: routes.booksList,
         element: <BooksList />,
+      },
+      {
+        path: routes.audiobooks,
+        element: <AudiobooksList />,
       },
     ],
   },

@@ -1,7 +1,7 @@
-import {Controller, Get, Post, Body, Param, Delete, Put} from '@nestjs/common';
-import { VoiceActorsService } from './voice-actors.service';
-import { CreateVoiceActorDto } from './dto/create-voice-actor.dto';
-import { UpdateVoiceActorDto } from './dto/update-voice-actor.dto';
+import { Controller, Get, Post, Body, Param, Delete, Put } from '@nestjs/common'
+import { VoiceActorsService } from './voice-actors.service'
+import { CreateVoiceActorDto } from './dto/create-voice-actor.dto'
+import { UpdateVoiceActorDto } from './dto/update-voice-actor.dto'
 
 @Controller('voice-actors')
 export class VoiceActorsController {
@@ -9,26 +9,29 @@ export class VoiceActorsController {
 
   @Post()
   create(@Body() createVoiceActorDto: CreateVoiceActorDto) {
-    return this.voiceActorsService.create(createVoiceActorDto);
+    return this.voiceActorsService.create(createVoiceActorDto)
   }
 
   @Get()
   findAll() {
-    return this.voiceActorsService.findAll();
+    return this.voiceActorsService.findAll()
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.voiceActorsService.findOne(id);
+    return this.voiceActorsService.findOne(id)
   }
 
   @Put(':id')
-  update(@Param('id') id: string, @Body() updateVoiceActorDto: UpdateVoiceActorDto) {
-    return this.voiceActorsService.update(id, updateVoiceActorDto);
+  update(
+    @Param('id') id: string,
+    @Body() updateVoiceActorDto: UpdateVoiceActorDto,
+  ) {
+    return this.voiceActorsService.update(id, updateVoiceActorDto)
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.voiceActorsService.remove(id);
+    return this.voiceActorsService.remove(id)
   }
 }

@@ -15,22 +15,15 @@ import ListItemIcon from '@mui/material/ListItemIcon'
 import ListItemText from '@mui/material/ListItemText'
 import MenuItem from '@mui/material/MenuItem'
 import Menu from '@mui/material/Menu'
-import {
-  Store,
-  Segment,
-  Person,
-  ManageAccounts,
-  Inventory,
-  Widgets,
-  AttachMoney,
-  AccountCircle,
-} from '@mui/icons-material'
+import MenuBookIcon from '@mui/icons-material/MenuBook'
+import { ManageAccounts, AttachMoney, AccountCircle } from '@mui/icons-material'
 
 import { useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { selectCurrentUser } from 'store'
 import { useLogoutMutation } from 'modules/auth'
 import { useEffect } from 'react'
+import { routes } from 'modules/books'
 
 const drawerWidth = 240
 
@@ -106,15 +99,7 @@ const Drawer = styled(MuiDrawer, {
 }))
 
 const list = [
-  { text: 'Магазины', path: '/store', icon: <Store /> },
-  { text: 'Отделы', path: '/department', icon: <Segment /> },
-  { text: 'Продавцы', path: '/seller', icon: <Person /> },
-  { text: 'Товары', path: '/goods', icon: <Widgets /> },
-  {
-    text: 'Доступность товаров',
-    path: '/goodsAvailability',
-    icon: <Inventory />,
-  },
+  { text: 'Книги', path: '/books', icon: <MenuBookIcon /> },
   {
     text: 'Выручка',
     path: '/revenue',

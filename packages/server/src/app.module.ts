@@ -9,6 +9,7 @@ import { GenresModule } from 'genres/genres.module'
 import { HistoryModule } from 'history/history.module'
 import { BooksModule } from 'books/books.module'
 import { ServeStaticModule } from '@nestjs/serve-static'
+import { AudioModule } from './audio/audio.module';
 import * as path from 'path'
 import * as process from 'process'
 
@@ -25,6 +26,7 @@ import * as process from 'process'
     ServeStaticModule.forRoot({
       rootPath: path.resolve(process.env.FILE_STORAGE_PATH, 'static'), // __dirname
     }),
+    AudioModule,
   ],
   providers: [PrismaService],
 })

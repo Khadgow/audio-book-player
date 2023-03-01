@@ -3,22 +3,37 @@ import { CreateAudiobookDto } from './dto/create-audiobook.dto'
 import { UpdateAudiobookDto } from './dto/update-audiobook.dto'
 import { FilesService } from 'files/files.service'
 import { PrismaService } from 'prisma.service'
+import { AudioService } from 'audio/audio.service'
+import * as getMP3Duration from 'get-mp3-duration'
 
 @Injectable()
 export class AudiobooksService {
   constructor(
     private fileService: FilesService,
     private prisma: PrismaService,
+    private audioService: AudioService,
   ) {}
 
   async create(
     createAudiobookDto: CreateAudiobookDto,
-    audio: Express.Multer.File,
+    files: Array<Express.Multer.File>,
   ) {
-    const audioUrl = await this.fileService.createFile(audio, 'audio')
-    return this.prisma.audiobook.create({
-      data: { audioUrl, ...createAudiobookDto },
+    const newAudiobook = await this.prisma.audiobook.create({
+      data: { ...createAudiobookDto },
     })
+
+    files.forEach((file, index) => {
+      this.audioService.create(
+        {
+          name: file.fieldname,
+          audiobookId: newAudiobook.id,
+          position: index,
+        },
+        file,
+      )
+    })
+
+    return newAudiobook
   }
 
   findAll() {

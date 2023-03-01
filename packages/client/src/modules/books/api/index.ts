@@ -1,5 +1,5 @@
 import { BaseQueryFn, createApi } from '@reduxjs/toolkit/query/react'
-import { Book } from '../models'
+import { Book, BookWithAudio } from '../models'
 import { request } from 'utils/request'
 import { AxiosRequestConfig, AxiosError } from 'axios'
 
@@ -16,7 +16,15 @@ export const booksApi = createApi({
         }
       },
     }),
+    getBookById: builder.query<BookWithAudio, { id: string }>({
+      query({ id }) {
+        return {
+          url: `/books/${id}`,
+          method: 'GET',
+        }
+      },
+    }),
   }),
 })
 
-export const { useGetBooksQuery } = booksApi
+export const { useGetBooksQuery, useGetBookByIdQuery } = booksApi
