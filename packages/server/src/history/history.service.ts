@@ -1,15 +1,13 @@
-import { Injectable } from '@nestjs/common';
-import { CreateHistoryDto } from './dto/create-history.dto';
-import { UpdateHistoryDto } from './dto/update-history.dto';
-import {PrismaService} from "prisma.service";
+import { Injectable } from '@nestjs/common'
+import { CreateHistoryDto } from './dto/create-history.dto'
+import { UpdateHistoryDto } from './dto/update-history.dto'
+import { PrismaService } from 'prisma.service'
 
 @Injectable()
 export class HistoryService {
-
-  constructor(private prisma: PrismaService) {
-  }
+  constructor(private prisma: PrismaService) {}
   create(createHistoryDto: CreateHistoryDto) {
-    return this.prisma.history.create({data: createHistoryDto})
+    return this.prisma.history.create({ data: createHistoryDto })
   }
 
   findAll() {
@@ -17,14 +15,14 @@ export class HistoryService {
   }
 
   findOne(id: string) {
-    return this.prisma.history.findUnique({where:{id}})
+    return this.prisma.history.findUnique({ where: { id } })
   }
 
   update(id: string, updateHistoryDto: UpdateHistoryDto) {
-    return this.prisma.history.update({where:{id}, data: updateHistoryDto})
+    return this.prisma.history.update({ where: { id }, data: updateHistoryDto })
   }
 
   remove(id: string) {
-    return this.prisma.history.delete({where:{id}})
+    return this.prisma.history.delete({ where: { id } })
   }
 }
