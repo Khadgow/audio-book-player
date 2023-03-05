@@ -16,6 +16,8 @@ import ListItemText from '@mui/material/ListItemText'
 import MenuItem from '@mui/material/MenuItem'
 import Menu from '@mui/material/Menu'
 import MenuBookIcon from '@mui/icons-material/MenuBook'
+import PersonIcon from '@mui/icons-material/Person'
+import KeyboardVoiceIcon from '@mui/icons-material/KeyboardVoice'
 import { ManageAccounts, AttachMoney, AccountCircle } from '@mui/icons-material'
 
 import { useNavigate } from 'react-router-dom'
@@ -100,6 +102,8 @@ const Drawer = styled(MuiDrawer, {
 
 const list = [
   { text: 'Книги', path: '/books', icon: <MenuBookIcon /> },
+  { text: 'Авторы', path: '/authors', icon: <PersonIcon /> },
+  { text: 'Актер озвучки', path: '/voiceActor', icon: <KeyboardVoiceIcon /> },
   {
     text: 'Выручка',
     path: '/revenue',
