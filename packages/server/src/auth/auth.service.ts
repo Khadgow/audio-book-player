@@ -9,7 +9,7 @@ import { UsersService } from 'users/users.service'
 import { JwtService } from '@nestjs/jwt'
 import * as bcrypt from 'bcryptjs'
 import { LoginDto } from 'auth/dto/login.dto'
-import { User } from '@prisma/client'
+import { UserWithRoles } from 'auth/entity/UserWithRoles'
 
 @Injectable()
 export class AuthService {
@@ -38,12 +38,12 @@ export class AuthService {
     return this.generateToken(user)
   }
 
-  private async generateToken(user: User) {
+  private async generateToken(user: UserWithRoles) {
     const payload = {
       email: user.email,
       username: user.username,
       id: user.id,
-      // roles: user.roles,
+      roles: user.roles,
     }
     return {
       user: payload,
@@ -63,15 +63,12 @@ export class AuthService {
       loginDto.password,
       user?.password,
     )
+
     if (passwordEquals) {
       return user
     }
     throw new UnauthorizedException({
       message: 'Некорректный емайл или пароль',
     })
-  }
-
-  private async getMe(token: string) {
-    return this.jwtService.verify(token)
   }
 }

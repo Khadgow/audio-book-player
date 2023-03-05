@@ -12,7 +12,7 @@ export const authApi = createApi({
     login: builder.mutation<TokenResponse, Credentials>({
       query(credentials) {
         return {
-          url: '/auth/login',
+          url: '/login',
           method: 'POST',
           data: credentials,
         }
@@ -21,7 +21,7 @@ export const authApi = createApi({
     register: builder.mutation<TokenResponse, RegisterFields>({
       query(data) {
         return {
-          url: '/auth/register',
+          url: '/register',
           method: 'POST',
           data,
         }
@@ -30,7 +30,7 @@ export const authApi = createApi({
     getMe: builder.query<User, void>({
       query() {
         return {
-          url: '/auth/getMe',
+          url: 'users/me',
           method: 'GET',
         }
       },
@@ -39,8 +39,8 @@ export const authApi = createApi({
     logout: builder.mutation<void, void>({
       query() {
         return {
-          url: 'auth/logout',
-          method: 'POST',
+          url: 'users/me',
+          method: 'GET',
         }
       },
       invalidatesTags: ['ME'],

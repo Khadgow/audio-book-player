@@ -16,10 +16,8 @@ export class UsersService {
   async createUser(dto: CreateUserDto) {
     const role = await this.roleService.getRoleByName('USER')
     const user = await this.prisma.user.create({
-      data: dto,
-    })
-    this.prisma.userRole.create({
-      data: { user_id: user.id, role_id: role.id },
+      data: { ...dto, roles: { connect: { id: role.id } } },
+      include: { roles: true },
     })
     return user
   }
@@ -37,9 +35,7 @@ export class UsersService {
         id: true,
         email: true,
         username: true,
-        roles: {
-          select: { role: true },
-        },
+        roles: true,
       },
     })
   }
@@ -61,8 +57,11 @@ export class UsersService {
     })
     const role = await this.roleService.getRoleByName(dto.name)
     if (role && user) {
-      await this.prisma.userRole.create({
-        data: { user_id: user.id, role_id: role.id },
+      await this.prisma.user.update({
+        where: { id: dto.userId },
+        data: {
+          roles: { connect: { id: role.id } },
+        },
       })
       return dto
     }

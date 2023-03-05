@@ -16,14 +16,20 @@ import ListItemText from '@mui/material/ListItemText'
 import MenuItem from '@mui/material/MenuItem'
 import Menu from '@mui/material/Menu'
 import MenuBookIcon from '@mui/icons-material/MenuBook'
-import { ManageAccounts, AttachMoney, AccountCircle } from '@mui/icons-material'
+import {
+  ManageAccounts,
+  AttachMoney,
+  AccountCircle,
+  History,
+} from '@mui/icons-material'
 
 import { useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
-import { selectCurrentUser } from 'store'
-import { useLogoutMutation } from 'modules/auth'
-import { useEffect } from 'react'
-import { routes } from 'modules/books'
+import { selectCurrentUser, useAppDispatch } from 'store'
+import { authApi, useLogoutMutation } from 'modules/auth'
+import { appActions } from 'store/appSlice'
+import { audiobookPlayerActions } from 'modules/audiobookPlayer'
+import { Button } from '@mui/material'
 
 const drawerWidth = 240
 
@@ -101,16 +107,10 @@ const Drawer = styled(MuiDrawer, {
 const list = [
   { text: 'Книги', path: '/books', icon: <MenuBookIcon /> },
   {
-    text: 'Выручка',
-    path: '/revenue',
-    icon: <AttachMoney />,
-    roles: ['ADMIN'],
-  },
-  {
-    text: 'Пользователи',
-    path: '/user',
-    icon: <ManageAccounts />,
-    roles: ['ADMIN'],
+    text: 'История',
+    path: '/history',
+    icon: <History />,
+    roles: ['USER'],
   },
 ]
 
@@ -120,13 +120,8 @@ export const Navbar: React.FC<NavbarProps> = ({ children }) => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
   const navigate = useNavigate()
   const userRoles = user?.roles?.map(({ name }) => name) || []
-  const [logout, { isSuccess }] = useLogoutMutation()
+  const dispatch = useAppDispatch()
 
-  useEffect(() => {
-    if (isSuccess) {
-      navigate('/')
-    }
-  }, [isSuccess, navigate])
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget)
   }
@@ -136,9 +131,18 @@ export const Navbar: React.FC<NavbarProps> = ({ children }) => {
   }
 
   const onLogout = () => {
-    logout()
     window.localStorage.removeItem('USER_TOKEN')
+    dispatch(appActions.setCurrentUser(null))
+    dispatch(audiobookPlayerActions.setAudio(undefined))
+    dispatch(audiobookPlayerActions.setAudiobook(undefined))
+    dispatch(authApi.util.resetApiState())
     setAnchorEl(null)
+    navigate('/login')
+  }
+
+  const onLogin = () => {
+    setAnchorEl(null)
+    navigate('/login')
   }
 
   const toggleDrawer = () => {
@@ -165,40 +169,54 @@ export const Navbar: React.FC<NavbarProps> = ({ children }) => {
             Audio book player
           </Typography>
           <div>
-            <IconButton
-              size="large"
-              aria-label="account of current user"
-              aria-controls="menu-appbar"
-              aria-haspopup="true"
-              onClick={handleMenu}
-              color="inherit"
-            >
-              <AccountCircle />
-            </IconButton>
-            <Menu
-              id="menu-appbar"
-              anchorEl={anchorEl}
-              anchorOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              open={Boolean(anchorEl)}
-              onClose={handleClose}
-            >
-              <Typography
-                display="flex"
-                alignItems="center"
-                justifyContent="center"
+            {user ? (
+              <>
+                {' '}
+                <IconButton
+                  size="large"
+                  aria-label="account of current user"
+                  aria-controls="menu-appbar"
+                  aria-haspopup="true"
+                  onClick={handleMenu}
+                  color="inherit"
+                >
+                  <AccountCircle />
+                </IconButton>
+                <Menu
+                  id="menu-appbar"
+                  anchorEl={anchorEl}
+                  anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                  }}
+                  keepMounted
+                  transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                  }}
+                  open={Boolean(anchorEl)}
+                  onClose={handleClose}
+                >
+                  <Typography
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="center"
+                  >
+                    {user?.username}
+                  </Typography>
+                  <MenuItem onClick={onLogout}>Logout</MenuItem>
+                </Menu>
+              </>
+            ) : (
+              <Button
+                sx={{
+                  color: 'white',
+                }}
+                onClick={onLogin}
               >
-                {user?.username}
-              </Typography>
-              <MenuItem onClick={onLogout}>Logout</MenuItem>
-            </Menu>
+                Войти
+              </Button>
+            )}
           </div>
         </Toolbar>
       </AppBar>

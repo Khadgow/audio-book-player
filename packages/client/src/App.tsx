@@ -1,11 +1,19 @@
 import React from 'react'
-import { useRoutes } from 'react-router-dom'
+import { Navigate, useRoutes } from 'react-router-dom'
 
-import { CommonRoute } from 'routes/CommonRoute'
 import { authRoutes } from 'modules/auth'
 import { booksRoutes } from 'modules/books'
+import { historyRoutes } from 'modules/history'
 
 export const App = () => {
-  const element = useRoutes([...authRoutes, ...booksRoutes])
+  const element = useRoutes([
+    ...authRoutes,
+    ...booksRoutes,
+    ...historyRoutes,
+    {
+      element: <Navigate to={'/books'} />,
+      path: '/',
+    },
+  ])
   return element
 }

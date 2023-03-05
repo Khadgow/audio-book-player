@@ -1,11 +1,16 @@
 import { createSlice } from '@reduxjs/toolkit'
-import { Audio, AudiobookWithBookInfo } from 'modules/books/models'
+import { Audio, AudiobookWithBookInfo } from 'modules/books'
 
 const name = '@@audiobookPlayer'
 
+type AudioWithPlayerInfo = Audio & {
+  playNow?: boolean
+  time?: number
+}
+
 export interface AudiobookPlayerState {
   selectedAudiobook?: AudiobookWithBookInfo
-  selectedAudio?: Audio
+  selectedAudio?: AudioWithPlayerInfo
 }
 
 const initialState: AudiobookPlayerState = {
@@ -23,8 +28,8 @@ export const audiobookPlayerSlice = createSlice({
       state.selectedAudio = payload
     },
     setAudioAndAudiobook(state, { payload }) {
-      state.selectedAudio = payload.audio
       state.selectedAudiobook = payload.audiobook
+      state.selectedAudio = payload.audio
     },
   },
 })

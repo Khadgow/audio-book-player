@@ -5,12 +5,14 @@ import { authApi } from 'modules/auth'
 import { booksApi } from 'modules/books'
 import { appReducer } from 'store/appSlice'
 import { audiobookPlayerReducer } from 'modules/audiobookPlayer'
+import { historyApi } from 'modules/history'
 
 export const createStore = () =>
   configureStore({
     reducer: {
       [authApi.reducerPath]: authApi.reducer,
       [booksApi.reducerPath]: booksApi.reducer,
+      [historyApi.reducerPath]: historyApi.reducer,
       app: appReducer,
       audiobookPlayer: audiobookPlayerReducer,
     },
@@ -18,6 +20,7 @@ export const createStore = () =>
       ...getDefaultMiddleware(),
       authApi.middleware,
       booksApi.middleware,
+      historyApi.middleware,
     ],
   })
 
