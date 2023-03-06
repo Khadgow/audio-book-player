@@ -1,11 +1,11 @@
 import React from 'react'
-import { useRoutes } from 'react-router-dom'
+import { Navigate, useRoutes } from 'react-router-dom'
 
-import { CommonRoute } from 'routes/CommonRoute'
 import { authRoutes } from 'modules/auth'
 import { booksRoutes } from 'modules/books'
-import { authorsRoutes } from './modules/authors'
-import { voiceActorRoutes } from './modules/voiceActor/routes'
+import { authorsRoutes } from 'modules/authors'
+import { voiceActorRoutes } from 'modules/voiceActor/routes'
+import { historyRoutes } from 'modules/history'
 
 export const App = () => {
   const element = useRoutes([
@@ -13,6 +13,11 @@ export const App = () => {
     ...booksRoutes,
     ...authorsRoutes,
     ...voiceActorRoutes,
+    ...historyRoutes,
+    {
+      element: <Navigate to={'/books'} />,
+      path: '/',
+    },
   ])
   return element
 }

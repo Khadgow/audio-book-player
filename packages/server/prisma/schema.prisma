@@ -8,16 +8,15 @@ datasource db {
 }
 
 model Audiobook {
-  id                                   String      @id @default(uuid()) @db.Uuid
-  name                                 String?     @db.VarChar(255)
-  bookId                               String?     @map("book_id") @db.Uuid
-  voiceActorId                         String?     @map("voice_actor_id") @db.Uuid
-  duration                             Int?
-  book_audiobook_bookTobook            Book?       @relation("audiobook_bookTobook", fields: [bookId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  voiceActor                           VoiceActor? @relation(fields: [voiceActorId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  history_history_audiobookToaudiobook History[]   @relation("history_audiobookToaudiobook")
-  history_history_user_idToaudiobook   History[]   @relation("history_user_idToaudiobook")
-  audio                                Audio[]     @relation("audioToAudiobook")
+  id                        String      @id @default(uuid()) @db.Uuid
+  name                      String?     @db.VarChar(255)
+  bookId                    String?     @map("book_id") @db.Uuid
+  voiceActorId              String?     @map("voice_actor_id") @db.Uuid
+  duration                  Int?
+  book                      Book?       @relation("audiobook_bookTobook", fields: [bookId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  voiceActor                VoiceActor? @relation(fields: [voiceActorId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  audio                     Audio[]     @relation("audioToAudiobook")
+  history                   History[]   @relation("historyToAudiobook")
 
   @@map("audiobook")
 }
@@ -30,6 +29,8 @@ model Audio {
   duration    Int?
   audiobookId String?    @map("audiobook_id") @db.Uuid
   audiobook   Audiobook? @relation("audioToAudiobook", fields: [audiobookId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  history     History[]  @relation("historyToAudio")
+
   @@map("audio")
 }
 
@@ -74,12 +75,15 @@ model Genre {
 }
 
 model History {
-  id                                     String     @id @default(uuid()) @db.Uuid
-  audiobookId                            String?    @map("audiobook_id") @db.Uuid
-  userId                                 String?    @map("user_id") @db.Uuid
-  time                                   Int?
-  audiobook_history_audiobookToaudiobook Audiobook? @relation("history_audiobookToaudiobook", fields: [audiobookId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  audiobook_history_user_idToaudiobook   Audiobook? @relation("history_user_idToaudiobook", fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  id          String     @id @default(uuid()) @db.Uuid
+  userId      String?    @map("user_id") @db.Uuid
+  audiobookId String?    @map("audiobook_id") @db.Uuid
+  audioId     String?    @map("audio_id") @db.Uuid
+  updatedAt   DateTime?  @map("updated_at") @db.Timestamptz()
+  time        Float?
+  user        User?      @relation("historyToUser", fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  audio       Audio?     @relation("historyToAudio", fields: [audioId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  audiobook   Audiobook? @relation("historyToAudiobook", fields: [audiobookId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@map("history")
 }
@@ -87,9 +91,7 @@ model History {
 model Role {
   id        String     @id @default(uuid()) @db.Uuid
   name      String?    @db.VarChar(255)
-  user_role UserRole[]
-
-  @@map("role")
+  users User[]
 }
 
 model User {
@@ -97,20 +99,10 @@ model User {
   username  String?    @db.VarChar(255)
   password  String?    @db.VarChar(255)
   email     String?    @unique @db.VarChar(255)
-  user_role UserRole[]
-
-  @@map("user")
+  roles     Role[]
+  history   History[]  @relation("historyToUser")
 }
 
-model UserRole {
-  role_id String @db.Uuid
-  user_id String @db.Uuid
-  role    Role   @relation(fields: [role_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  user    User   @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-
-  @@id([role_id, user_id])
-  @@map("user_role")
-}
 
 model VoiceActor {
   id         String      @id @default(uuid()) @db.Uuid
