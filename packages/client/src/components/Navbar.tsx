@@ -16,17 +16,15 @@ import ListItemText from '@mui/material/ListItemText'
 import MenuItem from '@mui/material/MenuItem'
 import Menu from '@mui/material/Menu'
 import MenuBookIcon from '@mui/icons-material/MenuBook'
-import {
-  ManageAccounts,
-  AttachMoney,
-  AccountCircle,
-  History,
-} from '@mui/icons-material'
+import PersonIcon from '@mui/icons-material/Person'
+import KeyboardVoiceIcon from '@mui/icons-material/KeyboardVoice'
+import AccountCircle from '@mui/icons-material/AccountCircle'
+import History from '@mui/icons-material/History'
 
 import { useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { selectCurrentUser, useAppDispatch } from 'store'
-import { authApi, useLogoutMutation } from 'modules/auth'
+import { authApi } from 'modules/auth'
 import { appActions } from 'store/appSlice'
 import { audiobookPlayerActions } from 'modules/audiobookPlayer'
 import { Button } from '@mui/material'
@@ -106,6 +104,8 @@ const Drawer = styled(MuiDrawer, {
 
 const list = [
   { text: 'Книги', path: '/books', icon: <MenuBookIcon /> },
+  { text: 'Авторы', path: '/authors', icon: <PersonIcon /> },
+  { text: 'Актер озвучки', path: '/voiceActor', icon: <KeyboardVoiceIcon /> },
   {
     text: 'История',
     path: '/history',

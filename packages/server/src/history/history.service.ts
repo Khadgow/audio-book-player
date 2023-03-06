@@ -23,6 +23,7 @@ export class HistoryService {
         audiobook: {
           include: {
             voiceActor: true,
+            audio: true,
             book: {
               include: {
                 author: true,
@@ -57,6 +58,7 @@ export class HistoryService {
         audio: true,
         audiobook: {
           include: {
+            audio: true,
             voiceActor: true,
             book: {
               include: {

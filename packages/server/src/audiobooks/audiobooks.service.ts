@@ -4,7 +4,6 @@ import { UpdateAudiobookDto } from './dto/update-audiobook.dto'
 import { FilesService } from 'files/files.service'
 import { PrismaService } from 'prisma.service'
 import { AudioService } from 'audio/audio.service'
-import * as getMP3Duration from 'get-mp3-duration'
 
 @Injectable()
 export class AudiobooksService {
