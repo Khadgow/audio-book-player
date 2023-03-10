@@ -16,11 +16,12 @@ import ListItemText from '@mui/material/ListItemText'
 import MenuItem from '@mui/material/MenuItem'
 import Menu from '@mui/material/Menu'
 import MenuBookIcon from '@mui/icons-material/MenuBook'
+
 import PersonIcon from '@mui/icons-material/Person'
 import KeyboardVoiceIcon from '@mui/icons-material/KeyboardVoice'
 import AccountCircle from '@mui/icons-material/AccountCircle'
 import History from '@mui/icons-material/History'
-
+import AudioFileIcon from '@mui/icons-material/AudioFile'
 import { useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { selectCurrentUser, useAppDispatch } from 'store'
@@ -104,13 +105,24 @@ const Drawer = styled(MuiDrawer, {
 
 const list = [
   { text: 'Книги', path: '/books', icon: <MenuBookIcon /> },
-  { text: 'Авторы', path: '/authors', icon: <PersonIcon /> },
-  { text: 'Актер озвучки', path: '/voiceActor', icon: <KeyboardVoiceIcon /> },
   {
     text: 'История',
     path: '/history',
     icon: <History />,
     roles: ['USER'],
+  },
+  { text: 'Авторы', path: '/authors', icon: <PersonIcon />, roles: ['ADMIN'] },
+  {
+    text: 'Актёры озвучки',
+    path: '/voiceActor',
+    icon: <KeyboardVoiceIcon />,
+    roles: ['ADMIN'],
+  },
+  {
+    text: 'Аудиокниги',
+    path: '/audiobooks',
+    icon: <AudioFileIcon />,
+    roles: ['ADMIN'],
   },
 ]
 

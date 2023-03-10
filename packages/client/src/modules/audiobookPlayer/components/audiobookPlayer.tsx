@@ -185,6 +185,7 @@ export const AudiobookPlayer = () => {
             zIndex: 1500,
             color: 'white',
             padding: '5px',
+            overflowY: 'scroll',
           }}
           bgcolor="primary.main"
         >
@@ -197,6 +198,7 @@ export const AudiobookPlayer = () => {
                   justifyContent: 'space-between',
                   alignItems: 'center',
                   cursor: 'pointer',
+                  backgroundColor: audioObj?.id === audio.id ? '#2d2d2d' : '',
                 }}
                 onClick={onSelectAudio(audio)}
               >
@@ -237,6 +239,10 @@ export const AudiobookPlayer = () => {
             onClick={onToggleGroup}
             sx={{
               cursor: 'pointer',
+              transition: '0.5s',
+              ':hover': {
+                backgroundColor: '#2d2d2d',
+              },
             }}
           >
             <img
