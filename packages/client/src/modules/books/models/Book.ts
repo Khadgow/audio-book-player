@@ -8,6 +8,13 @@ export interface Book {
   author: Author
 }
 
+export interface ChangeBook {
+  id: string
+  name: string
+  image: string
+  authorId: string
+}
+
 export type BookWithAudio = Book & {
   audiobooks: Audiobook[]
 }

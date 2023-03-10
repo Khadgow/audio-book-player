@@ -21,10 +21,16 @@ export class AudiobooksService {
       data: { ...createAudiobookDto },
     })
 
-    files.forEach((file, index) => {
+    const sortedFiles = [...files].sort(
+      (fileA, fileB) =>
+        Number(fileA.fieldname.split('|')[0]) -
+        Number(fileB.fieldname.split('|')[0]),
+    )
+
+    sortedFiles.forEach((file, index) => {
       this.audioService.create(
         {
-          name: file.fieldname,
+          name: file.fieldname.split('|').slice(1).join(),
           audiobookId: newAudiobook.id,
           position: index,
         },
