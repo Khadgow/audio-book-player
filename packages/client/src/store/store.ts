@@ -6,7 +6,8 @@ import { booksApi } from 'modules/books'
 import { appReducer } from 'store/appSlice'
 import { audiobookPlayerReducer } from 'modules/audiobookPlayer'
 import { authorsApi } from 'modules/authors/api'
-import { voiceActorApi } from '../modules/voiceActor/api'
+import { voiceActorApi } from 'modules/voiceActor/api'
+import { historyApi } from 'modules/history'
 
 export const createStore = () =>
   configureStore({
@@ -15,6 +16,7 @@ export const createStore = () =>
       [booksApi.reducerPath]: booksApi.reducer,
       [authorsApi.reducerPath]: authorsApi.reducer,
       [voiceActorApi.reducerPath]: voiceActorApi.reducer,
+      [historyApi.reducerPath]: historyApi.reducer,
       app: appReducer,
       audiobookPlayer: audiobookPlayerReducer,
     },
@@ -24,6 +26,7 @@ export const createStore = () =>
       booksApi.middleware,
       authorsApi.middleware,
       voiceActorApi.middleware,
+      historyApi.middleware,
     ],
   })
 

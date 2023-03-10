@@ -1,4 +1,6 @@
-import { Box, Grid } from '@mui/material'
+import { Audio as AudioInterface } from 'modules/books'
+import Box from '@mui/material/Box'
+import Grid from '@mui/material/Grid'
 import PlayArrowIcon from '@mui/icons-material/PlayArrow'
 import PauseIcon from '@mui/icons-material/Pause'
 import Stack from '@mui/material/Stack'
@@ -7,17 +9,28 @@ import VolumeDown from '@mui/icons-material/VolumeDown'
 import VolumeUp from '@mui/icons-material/VolumeUp'
 import IconButton from '@mui/material/IconButton'
 import { useSelector } from 'react-redux'
-import { selectCurrentAudio, selectCurrentAudiobook } from 'store'
+import {
+  selectCurrentAudio,
+  selectCurrentAudiobook,
+  selectCurrentUser,
+  useAppDispatch,
+} from 'store'
 import { createAudioUrl } from 'utils/createAudioUrl'
 import { useCallback, useEffect, useState } from 'react'
 import { createImageUrl } from 'utils/createImageUrl'
 import { createShortName } from 'utils/createShortName'
 import { toHHMMSS } from 'utils/toHHMMSS'
+import ChevronRightIcon from '@mui/icons-material/ChevronRight'
+import { audiobookPlayerActions } from 'modules/audiobookPlayer/slice'
+import io, { Socket } from 'socket.io-client'
+import { useGetLastHistoryQuery } from 'modules/history'
+
+const audio = new Audio()
 
 export const AudiobookPlayer = () => {
   const audioObj = useSelector(selectCurrentAudio)
   const audiobook = useSelector(selectCurrentAudiobook)
-  const [audio, setAudio] = useState<HTMLAudioElement>(new Audio())
+  const user = useSelector(selectCurrentUser)
   const [isPlaying, setIsPlaying] = useState(false)
   const [currentTime, setCurrentTime] = useState(0)
   const [volume, setVolume] = useState(
@@ -25,14 +38,73 @@ export const AudiobookPlayer = () => {
       ? Number(localStorage.getItem('savedVolume'))
       : 0.5
   )
+  const [isShowGroup, setIsShowGroup] = useState(false)
+  const [socket, setSocket] = useState<Socket | null>(null)
+
+  const dispatch = useAppDispatch()
+
+  const { data: history, isSuccess } = useGetLastHistoryQuery(undefined, {
+    skip: !user,
+  })
+
+  useEffect(() => {
+    if (isSuccess && history) {
+      dispatch(
+        audiobookPlayerActions.setAudioAndAudiobook({
+          audiobook: {
+            ...history.audiobook,
+            author: history.audiobook.book.author,
+          },
+          audio: { ...history.audio, time: history.time },
+        })
+      )
+    }
+  }, [dispatch, history, isSuccess])
 
   useEffect(() => {
     if (audioObj) {
       setCurrentTime(0)
-      setIsPlaying(false)
       audio.src = createAudioUrl(audioObj.audioUrl)
+      if (audioObj.playNow) {
+        audio.play()
+      } else {
+        setIsPlaying(false)
+      }
+      if (audioObj.time) {
+        audio.currentTime = audioObj.time
+        setCurrentTime(audioObj.time)
+      }
     }
-  }, [audio, audioObj])
+  }, [audioObj])
+
+  useEffect(() => {
+    if (user) {
+      const newSocket = io(import.meta.env.VITE_BASE_API_URL, {
+        extraHeaders: {
+          Authorization: `Bearer ${localStorage.getItem('USER_TOKEN')}`,
+        },
+      })
+      setSocket(newSocket)
+    }
+  }, [user])
+
+  useEffect(() => {
+    if (!user && socket) {
+      socket.close()
+      setSocket(null)
+    }
+  }, [socket, user])
+
+  useEffect(() => {
+    audio.onended = () => {
+      const nextAudio = audiobook?.audio[audioObj?.position + 1]
+      if (nextAudio) {
+        dispatch(
+          audiobookPlayerActions.setAudio({ ...nextAudio, playNow: true })
+        )
+      }
+    }
+  }, [audioObj, audiobook, dispatch])
 
   useEffect(() => {
     if (audio) {
@@ -42,68 +114,131 @@ export const AudiobookPlayer = () => {
         audio.pause()
       }
     }
-  }, [audio, isPlaying])
-
-  // useEffect(() => {
-  //   if (audio) {
-  //     audio.currentTime = currentTime
-  //   }
-  // }, [audio, currentTime])
+  }, [isPlaying])
 
   useEffect(() => {
     if (audio) {
       audio.volume = volume
       localStorage.setItem('savedVolume', String(volume))
     }
-  }, [audio, volume])
+  }, [volume])
 
   useEffect(() => {
     const timer = setInterval(() => {
       if (audio && !audio.paused) {
         setCurrentTime(audio.currentTime)
+        socket?.emit(
+          'history',
+          JSON.stringify({
+            time: audio.currentTime,
+            audioId: audioObj?.id,
+            audiobookId: audiobook?.id,
+          })
+        )
       }
     }, 500)
     return () => {
       clearTimeout(timer)
     }
-  }, [audio])
+  }, [audioObj?.id, audiobook?.id, socket])
 
   const onPlayPause = useCallback(() => {
     setIsPlaying((prevState) => !prevState)
   }, [])
 
-  const onChangeTime = useCallback(
-    (event: Event, value: number) => {
-      setCurrentTime(value)
-      if (audio) {
-        audio.currentTime = value
-      }
-    },
-    [audio]
-  )
+  const onChangeTime = useCallback((event: Event, value: number) => {
+    setCurrentTime(value)
+    if (audio) {
+      audio.currentTime = value
+    }
+  }, [])
 
   const onChangeVolume = useCallback((event: Event, value: number) => {
     setVolume(value)
   }, [])
 
+  const onToggleGroup = useCallback(
+    () => setIsShowGroup((prevState) => !prevState),
+    []
+  )
+
+  const onSelectAudio = useCallback(
+    (audio: AudioInterface) => () => {
+      dispatch(audiobookPlayerActions.setAudio(audio))
+    },
+    [dispatch]
+  )
+
+  if (!audiobook) {
+    return null
+  }
+
   return (
-    <Grid
-      container
-      sx={{
-        position: 'fixed',
-        top: '90vh',
-        width: '100vw',
-        height: '10vh',
-        zIndex: 1500,
-        color: 'white',
-        padding: '5px',
-      }}
-      bgcolor="primary.main"
-      alignItems="center"
-    >
-      {audiobook ? (
+    <>
+      {isShowGroup && (
+        <Box
+          sx={{
+            position: 'fixed',
+            bottom: '10vh',
+            width: '320px',
+            maxHeight: '150px',
+            zIndex: 1500,
+            color: 'white',
+            padding: '5px',
+          }}
+          bgcolor="primary.main"
+        >
+          <Stack>
+            {audiobook.audio.map((audio) => (
+              <Box
+                key={audio.id}
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  cursor: 'pointer',
+                }}
+                onClick={onSelectAudio(audio)}
+              >
+                <Box
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                  }}
+                >
+                  {audioObj?.id === audio.id && <ChevronRightIcon />}{' '}
+                  {audio.name}
+                </Box>
+                <Box>{toHHMMSS(audio.duration)}</Box>
+              </Box>
+            ))}
+          </Stack>
+        </Box>
+      )}
+      <Grid
+        container
+        sx={{
+          position: 'fixed',
+          top: '90vh',
+          width: '100vw',
+          height: '10vh',
+          zIndex: 1500,
+          color: 'white',
+          padding: '5px',
+        }}
+        bgcolor="primary.main"
+        alignItems="center"
+      >
         <>
-          <Grid item container xs={2}>
+          <Grid
+            item
+            container
+            xs={2}
+            onClick={onToggleGroup}
+            sx={{
+              cursor: 'pointer',
+            }}
+          >
             <img
               alt="Book"
               src={createImageUrl(audiobook.book.imageUrl)}
@@ -172,9 +307,8 @@ export const AudiobookPlayer = () => {
             </Stack>
           </Grid>
         </>
-      ) : (
-        <div>Пусто</div>
-      )}
-    </Grid>
+        )
+      </Grid>
+    </>
   )
 }

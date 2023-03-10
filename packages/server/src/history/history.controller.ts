@@ -1,7 +1,16 @@
-import {Controller, Get, Post, Body, Param, Delete, Put} from '@nestjs/common';
-import { HistoryService } from './history.service';
-import { CreateHistoryDto } from './dto/create-history.dto';
-import { UpdateHistoryDto } from './dto/update-history.dto';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Delete,
+  Put,
+  Headers,
+} from '@nestjs/common'
+import { HistoryService } from './history.service'
+import { CreateHistoryDto } from './dto/create-history.dto'
+import { UpdateHistoryDto } from './dto/update-history.dto'
 
 @Controller('history')
 export class HistoryController {
@@ -9,26 +18,31 @@ export class HistoryController {
 
   @Post()
   create(@Body() createHistoryDto: CreateHistoryDto) {
-    return this.historyService.create(createHistoryDto);
+    return this.historyService.create(createHistoryDto)
   }
 
   @Get()
-  findAll() {
-    return this.historyService.findAll();
+  findAll(@Headers() headers) {
+    return this.historyService.findAll(headers.authorization)
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.historyService.findOne(id);
-  }
+  // @Get(':id')
+  // findOne(@Param('id') id: string) {
+  //   return this.historyService.findOne(id)
+  // }
 
   @Put(':id')
   update(@Param('id') id: string, @Body() updateHistoryDto: UpdateHistoryDto) {
-    return this.historyService.update(id, updateHistoryDto);
+    return this.historyService.update(id, updateHistoryDto)
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.historyService.remove(id);
+    return this.historyService.remove(id)
+  }
+
+  @Get('/last')
+  finLast(@Headers() headers) {
+    return this.historyService.findLast(headers.authorization)
   }
 }
