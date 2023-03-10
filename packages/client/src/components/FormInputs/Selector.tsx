@@ -21,10 +21,6 @@ export const Selector: React.FC<SelectorProps> = ({
     control,
     name,
   })
-  console.log(
-    'aaa',
-    options?.find((option) => option.value !== field.value)
-  )
 
   return (
     <Select

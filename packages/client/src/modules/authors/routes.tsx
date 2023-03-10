@@ -4,6 +4,7 @@ import { CommonRoute } from 'routes/CommonRoute'
 import { AuthorsList, AuthorPage } from './pages'
 import { AuthorCreationForm } from './components/AuthorCreationForm'
 import { AuthorEditingForm } from './components/AuthorEditingForm'
+import { RoleRoute } from 'routes/RoleRoute'
 
 export const routes = {
   authorsList: '/authors',
@@ -14,7 +15,7 @@ export const routes = {
 
 export const authorsRoutes = [
   {
-    element: <CommonRoute />,
+    element: <RoleRoute roles={['ADMIN']} />,
     children: [
       {
         path: routes.authorsList,

@@ -6,6 +6,7 @@ import { booksRoutes } from 'modules/books'
 import { authorsRoutes } from 'modules/authors'
 import { voiceActorRoutes } from 'modules/voiceActor/routes'
 import { historyRoutes } from 'modules/history'
+import { audiobookRoutes } from 'modules/audiobook/routes'
 
 export const App = () => {
   const element = useRoutes([
@@ -14,6 +15,7 @@ export const App = () => {
     ...authorsRoutes,
     ...voiceActorRoutes,
     ...historyRoutes,
+    ...audiobookRoutes,
     {
       element: <Navigate to={'/books'} />,
       path: '/',
