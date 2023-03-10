@@ -30,6 +30,7 @@ export const AudiobooksList = () => {
     [author, book, dispatch]
   )
 
+  console.log('audiobooks', audiobooks)
   if (isFetching) {
     return <Loader />
   }

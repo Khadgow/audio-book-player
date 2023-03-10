@@ -1,10 +1,14 @@
 import React from 'react'
 import { BooksList, AudiobooksList } from './pages'
 import { CommonRoute } from 'routes/CommonRoute'
+import { BooksCreationForm } from './components/BooksCreationForm'
+import { BookEditionForm } from './components/BookEditionForm'
 
 export const routes = {
   booksList: '/books',
   audiobooks: '/books/:id',
+  booksCreate: '/books/create',
+  booksEdit: '/books/edit/:id',
 }
 
 export const booksRoutes = [
@@ -18,6 +22,14 @@ export const booksRoutes = [
       {
         path: routes.audiobooks,
         element: <AudiobooksList />,
+      },
+      {
+        path: routes.booksCreate,
+        element: <BooksCreationForm />,
+      },
+      {
+        path: routes.booksEdit,
+        element: <BookEditionForm />,
       },
     ],
   },

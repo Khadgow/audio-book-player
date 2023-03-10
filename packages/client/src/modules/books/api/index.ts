@@ -1,5 +1,5 @@
 import { BaseQueryFn, createApi } from '@reduxjs/toolkit/query/react'
-import { Book, BookWithAudio } from '../models'
+import { ChangeBook, Book, BookWithAudio } from '../models'
 import { request } from 'utils/request'
 import { AxiosRequestConfig, AxiosError } from 'axios'
 
@@ -15,6 +15,7 @@ export const booksApi = createApi({
           method: 'GET',
         }
       },
+      providesTags: ['Book'],
     }),
     getBookById: builder.query<BookWithAudio, { id: string }>({
       query({ id }) {
@@ -23,8 +24,35 @@ export const booksApi = createApi({
           method: 'GET',
         }
       },
+      providesTags: ['Book'],
+    }),
+
+    addBook: builder.mutation<ChangeBook, Omit<ChangeBook, 'id'>>({
+      query(data) {
+        return {
+          url: `/books`,
+          method: 'post',
+          data,
+        }
+      },
+      invalidatesTags: ['Book'],
+    }),
+    editBook: builder.mutation<ChangeBook, ChangeBook>({
+      query(data) {
+        return {
+          url: `/books/${data.id}`,
+          method: 'put',
+          data,
+        }
+      },
+      invalidatesTags: ['Book'],
     }),
   }),
 })
 
-export const { useGetBooksQuery, useGetBookByIdQuery } = booksApi
+export const {
+  useGetBooksQuery,
+  useGetBookByIdQuery,
+  useAddBookMutation,
+  useEditBookMutation,
+} = booksApi
